@@ -1,0 +1,18 @@
+# Global code owners
+* @B0yZ4kr14
+
+# Backend code
+/backend/ @B0yZ4kr14
+
+# Frontend code
+/frontend/ @B0yZ4kr14
+
+# CI/CD workflows
+/.github/workflows/ @B0yZ4kr14
+
+# Docker configurations
+/docker/ @B0yZ4kr14
+
+# Documentation
+/docs/ @B0yZ4kr14
+/README.md @B0yZ4kr14
