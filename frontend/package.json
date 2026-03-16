@@ -41,6 +41,9 @@
     "@tailwindcss/postcss": "^4.2.1",
     "typescript": "^5.3.3",
     "vite": "^8.0.0",
-    "vitest": "^1.3.1"
+    "vitest": "^1.3.1",
+    "jsdom": "^24.0.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^6.0.0"
   }
 }
