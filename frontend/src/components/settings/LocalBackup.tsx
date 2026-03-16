@@ -61,6 +61,7 @@ export const LocalBackup: React.FC = () => {
   // Carregar dados iniciais
   useEffect(() => {
     loadBackupData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Função auxiliar para fetch com timeout
