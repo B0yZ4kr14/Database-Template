@@ -4,7 +4,7 @@
 # Imagem otimizada para Ubuntu Server LTS
 # =============================================================================
 
-FROM python:3.11-slim-bookworm
+FROM python:3.14-slim-bookworm
 
 # Labels
 LABEL maintainer="Database Team"
