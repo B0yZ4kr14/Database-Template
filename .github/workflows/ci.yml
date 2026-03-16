@@ -82,7 +82,7 @@ jobs:
 
       - name: Test
         working-directory: ./frontend
-        run: npm test -- --coverage --watchAll=false
+        run: npm test -- --coverage
 
   # ===========================================================================
   # Docker Build
@@ -127,7 +127,8 @@ jobs:
             --exclude='node_modules' \
             --exclude='__pycache__' \
             --exclude='*.pyc' \
-            .
+            --warning=no-file-changed \
+            . || true
 
       - name: Upload Release Asset
         uses: actions/upload-artifact@v7

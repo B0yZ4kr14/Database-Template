@@ -63,7 +63,7 @@ const EmptyHistoryIcon: React.FC = () => (
 const sanitizeToolId = (name: string): string => {
   return name
     .toLowerCase()
-    .replace(/[^a-z0-9_\-]/g, '_')
+    .replace(/[^a-z0-9_-]/g, '_')
     .replace(/_+/g, '_')
     .substring(0, 64);
 };

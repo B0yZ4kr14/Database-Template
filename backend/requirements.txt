@@ -14,7 +14,7 @@ python-multipart==0.0.22
 
 # Authentication
 python-jose[cryptography]==3.5.0
-passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
 
 # Database Drivers (opcionais)
 # psycopg2-binary==2.9.9  # PostgreSQL
