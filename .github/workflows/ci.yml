@@ -82,7 +82,7 @@ jobs:
 
       - name: Test
         working-directory: ./frontend
-        run: npm test -- --coverage --watchAll=false
+        run: npm test -- --coverage
 
   # ===========================================================================
   # Docker Build
