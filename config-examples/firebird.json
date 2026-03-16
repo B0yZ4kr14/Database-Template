@@ -1,0 +1,17 @@
+{
+  "name": "Firebird - Configuração Padrão",
+  "description": "Configuração para Firebird (banco legado multiplataforma)",
+  "engine": "firebird",
+  "host": "localhost",
+  "port": 3050,
+  "database": "/var/lib/firebird/data/orthoplus.fdb",
+  "username": "SYSDBA",
+  "password": "masterkey",
+  "install_command": "sudo apt install firebird3.0-server",
+  "notes": [
+    "Banco de dados legado",
+    "Suporte a modo embedded",
+    "Padrão de porta: 3050",
+    "Usuário padrão: SYSDBA"
+  ]
+}

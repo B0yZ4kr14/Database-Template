@@ -1,0 +1,17 @@
+{
+  "name": "MariaDB - Configuração Padrão",
+  "description": "Configuração para MariaDB (compatível com MySQL)",
+  "engine": "mariadb",
+  "host": "localhost",
+  "port": 3306,
+  "database": "orthoplus",
+  "username": "root",
+  "password": "",
+  "charset": "utf8mb4",
+  "install_command": "sudo apt install mariadb-server mariadb-client",
+  "notes": [
+    "Compatível com MySQL",
+    "Padrão de porta: 3306",
+    "Bom para migração de sistemas MySQL existentes"
+  ]
+}

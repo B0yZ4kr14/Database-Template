@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  # Backend API
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/Dockerfile.backend
+    container_name: database-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - database_data:/opt/database/data
+      - database_backups:/opt/database/backups
+      - database_logs:/var/log/database
+    environment:
+      - PYTHONPATH=/opt/database/backend
+      - DATA_DIR=/opt/database/data
+      - BACKUP_DIR=/opt/database/backups
+    networks:
+      - database-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend (servido via Nginx)
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: ../docker/Dockerfile.frontend
+    container_name: database-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    networks:
+      - database-network
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+
+  # PostgreSQL (opcional)
+  postgres:
+    image: postgres:15-alpine
+    container_name: database-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: orthoplus
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - database-network
+    profiles:
+      - with-postgres
+
+  # MariaDB (opcional)
+  mariadb:
+    image: mariadb:11
+    container_name: database-mariadb
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: orthoplus
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: dbpassword
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - database-network
+    profiles:
+      - with-mariadb
+
+networks:
+  database-network:
+    driver: bridge
+
+volumes:
+  database_data:
+    driver: local
+  database_backups:
+    driver: local
+  database_logs:
+    driver: local
+  postgres_data:
+    driver: local
+  mariadb_data:
+    driver: local

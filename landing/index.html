@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Database v2.0.2 - Template completo para configuração de bancos de dados">
+  <title>Database v2.0.2 | Demonstração Interativa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(180deg, #0a0a0f 0%, #111827 50%, #0a0a0f 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0a0a0f; }
+    ::-webkit-scrollbar-thumb { 
+      background: linear-gradient(180deg, #00d4ff, #a855f7); 
+      border-radius: 4px; 
+    }
+
+    /* Layout Principal */
+    .app-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #00d4ff, #a855f7);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #00d4ff, #a855f7, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .version-badge {
+      font-size: 12px;
+      padding: 2px 8px;
+      background: rgba(0, 212, 255, 0.2);
+      color: #00d4ff;
+      border-radius: 12px;
+      margin-left: 8px;
+    }
+
+    /* Navigation */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .nav-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #9ca3af;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .nav-tab:hover {
+      background: rgba(0, 212, 255, 0.1);
+      color: #fff;
+    }
+
+    .nav-tab.active {
+      background: linear-gradient(135deg, #00d4ff, #a855f7);
+      color: #000;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Section */
+    .section {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Card Principal */
+    .main-card {
+      background: rgba(17, 24, 39, 0.6);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    /* Card Header */
+    .card-header {
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(168, 85, 247, 0.1));
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .card-title-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #00d4ff, #a855f7);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-title-text {
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card-subtitle {
+      color: #9ca3af;
+      font-size: 14px;
+      margin-left: 44px;
+    }
+
+    /* Tabs Internas */
+    .tabs-container {
+      display: flex;
+      gap: 8px;
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+      overflow-x: auto;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #9ca3af;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      background: rgba(0, 212, 255, 0.1);
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #00d4ff, #a855f7);
+      color: #000;
+    }
+
+    .tab-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Tab Content */
+    .tab-content {
+      padding: 24px;
+      min-height: 400px;
+    }
+
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Engine Cards */
+    .engines-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 640px) {
+      .engines-grid { grid-template-columns: 1fr; }
+    }
+
+    .engine-card {
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(0, 212, 255, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .engine-card:hover {
+      border-color: rgba(0, 212, 255, 0.5);
+      background: rgba(0, 212, 255, 0.05);
+    }
+
+    .engine-card.selected {
+      border-color: #fbbf24;
+      background: rgba(251, 191, 36, 0.1);
+    }
+
+    .engine-card.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 24px;
+      height: 24px;
+      background: #fbbf24;
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .engine-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .engine-icon {
+      font-size: 28px;
+    }
+
+    .engine-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .engine-port {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .engine-description {
+      font-size: 13px;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+
+    /* Engine Details */
+    .engine-details {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .details-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      color: #00d4ff;
+      font-weight: 600;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 640px) {
+      .details-grid { grid-template-columns: 1fr; }
+    }
+
+    .details-section h4 {
+      font-size: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .details-section.when-use h4 { color: #4ade80; }
+    .details-section.limitations h4 { color: #fbbf24; }
+
+    .details-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .details-section li {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 6px;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .details-section li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: currentColor;
+    }
+
+    .features-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .feature-tag {
+      padding: 4px 12px;
+      background: rgba(0, 212, 255, 0.15);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 16px;
+      font-size: 12px;
+      color: #00d4ff;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #fbbf24;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #00d4ff;
+      box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: #6b7280;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #9ca3af;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .password-toggle:hover {
+      color: #00d4ff;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0891b2, #0e7490);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0e7490, #155e75);
+      transform: translateY(-1px);
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .alert-warning {
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      color: #fbbf24;
+    }
+
+    /* Maintenance Tools */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 640px) {
+      .tools-grid { grid-template-columns: 1fr; }
+    }
+
+    .tool-card {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .tool-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .tool-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fbbf24;
+    }
+
+    .tool-run-btn {
+      width: 32px;
+      height: 32px;
+      background: rgba(0, 212, 255, 0.2);
+      border: 1px solid rgba(0, 212, 255, 0.4);
+      border-radius: 6px;
+      color: #00d4ff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .tool-run-btn:hover {
+      background: rgba(0, 212, 255, 0.3);
+    }
+
+    .tool-description {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    .tool-sql {
+      font-family: 'Fira Code', monospace;
+      font-size: 12px;
+      color: #00d4ff;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px;
+      border-radius: 6px;
+    }
+
+    /* History Section */
+    .history-section {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(0, 212, 255, 0.1);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .history-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 16px;
+      color: #6b7280;
+    }
+
+    .history-title {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+
+    .history-subtitle {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    /* Migration */
+    .migration-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .migration-card {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .migration-card:hover {
+      border-color: rgba(0, 212, 255, 0.5);
+      background: rgba(0, 212, 255, 0.05);
+    }
+
+    .migration-card svg {
+      width: 32px;
+      height: 32px;
+      margin: 0 auto 12px;
+      color: #00d4ff;
+    }
+
+    .migration-card h4 {
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .migration-card p {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .migration-assisted {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .migration-assisted h4 {
+      font-size: 14px;
+      color: #fbbf24;
+      margin-bottom: 8px;
+    }
+
+    .migration-assisted p {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+
+    .migration-selectors {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .migration-selectors select {
+      flex: 1;
+      padding: 10px 14px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .migration-selectors svg {
+      width: 20px;
+      height: 20px;
+      color: #6b7280;
+    }
+
+    /* Docs */
+    .docs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .doc-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 12px;
+      color: #fff;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .doc-link:hover {
+      border-color: rgba(0, 212, 255, 0.5);
+      background: rgba(0, 212, 255, 0.05);
+    }
+
+    .doc-link-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .doc-link svg {
+      width: 20px;
+      height: 20px;
+      color: #00d4ff;
+    }
+
+    .doc-link-arrow {
+      width: 16px;
+      height: 16px;
+      color: #6b7280;
+    }
+
+    .install-tips {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .install-tips h4 {
+      font-size: 14px;
+      color: #fbbf24;
+      margin-bottom: 12px;
+    }
+
+    .install-tips code {
+      display: block;
+      font-family: 'Fira Code', monospace;
+      font-size: 12px;
+      color: #00d4ff;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    /* Templates */
+    .templates-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .template-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .template-card:hover {
+      border-color: rgba(0, 212, 255, 0.5);
+    }
+
+    .template-info h4 {
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .template-info p {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .template-btn {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #0891b2, #0e7490);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .template-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: rgba(17, 24, 39, 0.95);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+      transform: scale(0.9);
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active .modal {
+      transform: scale(1);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #fbbf24;
+    }
+
+    .modal-text {
+      font-size: 14px;
+      color: #9ca3af;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    .modal-close {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #0891b2, #0e7490);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(17, 24, 39, 0.95);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 12px;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1001;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-icon {
+      width: 24px;
+      height: 24px;
+      color: #00d4ff;
+    }
+
+    /* ===== BACKUP SECTION STYLES ===== */
+    .backup-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .backup-header-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #00d4ff, #a855f7);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .backup-header-text {
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .backup-subtitle {
+      color: #9ca3af;
+      font-size: 14px;
+      margin-left: 44px;
+      margin-bottom: 20px;
+    }
+
+    .backup-info-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .backup-info-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fbbf24;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .backup-info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .backup-info-item {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+
+    .backup-info-number {
+      width: 20px;
+      height: 20px;
+      background: rgba(0, 212, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #00d4ff;
+      flex-shrink: 0;
+    }
+
+    .backup-info-item strong {
+      color: #fbbf24;
+    }
+
+    .backup-tips {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .backup-tip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      border-radius: 8px;
+      font-size: 12px;
+      color: #fbbf24;
+    }
+
+    .backup-tip svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .backup-alert {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 8px;
+      font-size: 12px;
+      color: #ef4444;
+      margin-top: 8px;
+    }
+
+    .backup-alert svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .backup-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .backup-tab {
+      flex: 1;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 8px;
+      color: #9ca3af;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .backup-tab:hover {
+      border-color: rgba(0, 212, 255, 0.5);
+      color: #fff;
+    }
+
+    .backup-tab.active {
+      background: linear-gradient(135deg, #0891b2, #0e7490);
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .backup-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .backup-action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .backup-action-btn:hover {
+      border-color: rgba(0, 212, 255, 0.5);
+      background: rgba(0, 212, 255, 0.05);
+    }
+
+    .backup-action-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .backup-empty {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(0, 212, 255, 0.1);
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .backup-schedule {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+
+    .backup-schedule-text {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .backup-schedule-text svg {
+      width: 18px;
+      height: 18px;
+      color: #00d4ff;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 24px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-switch.active {
+      background: linear-gradient(135deg, #0891b2, #0e7490);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-switch.active::after {
+      left: 26px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M3 5V19A9 3 0 0 0 21 19V5"/>
+              <path d="M3 12A9 3 0 0 0 21 12"/>
+            </svg>
+          </div>
+          <div>
+            <span class="logo-text">Database</span>
+            <span class="version-badge">v2.0.2</span>
+          </div>
+        </div>
+        
+        <nav class="nav-tabs">
+          <button class="nav-tab active" onclick="showSection('database')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M3 5V19A9 3 0 0 0 21 19V5"/>
+              <path d="M3 12A9 3 0 0 0 21 12"/>
+            </svg>
+            Configurações
+          </button>
+          <button class="nav-tab" onclick="showSection('backup')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+            Backup
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Database Section -->
+      <section id="database-section" class="section active">
+        <div class="main-card">
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="card-title">
+              <div class="card-title-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                  <path d="M3 5V19A9 3 0 0 0 21 19V5"/>
+                  <path d="M3 12A9 3 0 0 0 21 12"/>
+                </svg>
+              </div>
+              <span class="card-title-text">Banco de Dados Avançado</span>
+            </div>
+            <p class="card-subtitle">Configure o motor e conexão do banco de dados</p>
+          </div>
+
+          <!-- Tabs -->
+          <div class="tabs-container">
+            <button class="tab-btn active" data-tab="motor" onclick="switchTab('motor')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 1v6m0 6v6m4.22-10.22l4.24-4.24M6.34 6.34L2.1 2.1m17.8 17.8l-4.24-4.24M6.34 17.66l-4.24 4.24M23 12h-6m-6 0H1m20.24-4.24l-4.24 4.24M6.34 6.34l-4.24-4.24"/>
+              </svg>
+              Motor
+            </button>
+            <button class="tab-btn" data-tab="config" onclick="switchTab('config')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9"/>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+              Config
+            </button>
+            <button class="tab-btn" data-tab="reparo" onclick="switchTab('reparo')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+              </svg>
+              Reparo
+            </button>
+            <button class="tab-btn" data-tab="migracao" onclick="switchTab('migracao')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M8 3L4 7l4 4"/>
+                <path d="M4 7h16"/>
+                <path d="M16 21l4-4-4-4"/>
+                <path d="M20 17H4"/>
+              </svg>
+              Migração
+            </button>
+            <button class="tab-btn" data-tab="templates" onclick="switchTab('templates')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+              </svg>
+              Templates
+            </button>
+            <button class="tab-btn" data-tab="docs" onclick="switchTab('docs')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+              Docs
+            </button>
+          </div>
+
+          <!-- Tab Content -->
+          <div class="tab-content">
+            <!-- Motor Tab -->
+            <div id="motor-panel" class="tab-panel active">
+              <div class="engines-grid">
+                <div class="engine-card" data-engine="sqlite" onclick="selectEngine('sqlite')">
+                  <div class="engine-header">
+                    <span class="engine-icon">🗃️</span>
+                    <div>
+                      <div class="engine-name">SQLite</div>
+                    </div>
+                  </div>
+                  <p class="engine-description">Banco de dados leve em arquivo único, ideal para instalações single-node</p>
+                </div>
+                <div class="engine-card selected" data-engine="postgresql" onclick="selectEngine('postgresql')">
+                  <div class="engine-header">
+                    <span class="engine-icon">🐘</span>
+                    <div>
+                      <div class="engine-name">PostgreSQL</div>
+                      <div class="engine-port">Porta: 5432</div>
+                    </div>
+                  </div>
+                  <p class="engine-description">Banco de dados robusto e escalável para ambientes corporativos</p>
+                </div>
+                <div class="engine-card" data-engine="mariadb" onclick="selectEngine('mariadb')">
+                  <div class="engine-header">
+                    <span class="engine-icon">🐬</span>
+                    <div>
+                      <div class="engine-name">MariaDB</div>
+                      <div class="engine-port">Porta: 3306</div>
+                    </div>
+                  </div>
+                  <p class="engine-description">Fork do MySQL com melhor performance e compatibilidade</p>
+                </div>
+                <div class="engine-card" data-engine="firebird" onclick="selectEngine('firebird')">
+                  <div class="engine-header">
+                    <span class="engine-icon">🔥</span>
+                    <div>
+                      <div class="engine-name">Firebird</div>
+                      <div class="engine-port">Porta: 3050</div>
+                    </div>
+                  </div>
+                  <p class="engine-description">Banco de dados legado multiplataforma com modo embedded</p>
+                </div>
+              </div>
+
+              <div class="engine-details" id="engine-details">
+                <!-- Details will be populated by JS -->
+              </div>
+            </div>
+
+            <!-- Config Tab -->
+            <div id="config-panel" class="tab-panel">
+              <div id="pg-config">
+                <div class="form-group">
+                  <label class="form-label">Host</label>
+                  <input type="text" class="form-input" value="localhost" placeholder="localhost">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Porta</label>
+                  <input type="number" class="form-input" value="5432" placeholder="5432">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Banco de Dados</label>
+                  <input type="text" class="form-input" value="orthoplus" placeholder="orthoplus">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Usuário</label>
+                  <input type="text" class="form-input" value="postgres" placeholder="postgres">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Senha</label>
+                  <div class="password-wrapper">
+                    <input type="password" class="form-input" placeholder="••••••••">
+                    <button class="password-toggle" onclick="togglePassword(this)">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <button class="btn btn-primary" onclick="testConnection()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                  </svg>
+                  Testar Conexão PostgreSQL
+                </button>
+                <div class="alert alert-warning">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                  Modo Demo: Conexão será simulada
+                </div>
+              </div>
+
+              <div id="sqlite-config" style="display: none;">
+                <div class="form-group">
+                  <label class="form-label">Caminho do Arquivo</label>
+                  <input type="text" class="form-input" value="/var/lib/orthoplus/database.db" placeholder="/var/lib/orthoplus/database.db">
+                </div>
+                <button class="btn btn-primary" onclick="testConnection()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                  </svg>
+                  Testar Conexão SQLite
+                </button>
+                <div class="alert alert-warning">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                  Modo Demo: Conexão será simulada
+                </div>
+              </div>
+            </div>
+
+            <!-- Reparo Tab -->
+            <div id="reparo-panel" class="tab-panel">
+              <p style="color: #9ca3af; font-size: 14px; margin-bottom: 16px;">Ferramentas de manutenção e reparo para <span id="repair-engine-name">PostgreSQL</span></p>
+              <div class="tools-grid" id="tools-grid">
+                <!-- Tools will be populated by JS -->
+              </div>
+              <div class="history-section">
+                <svg class="history-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+                <p class="history-title">Nenhum histórico de conexão disponível</p>
+                <p class="history-subtitle">Execute um teste de conexão para começar</p>
+              </div>
+            </div>
+
+            <!-- Migração Tab -->
+            <div id="migracao-panel" class="tab-panel">
+              <p style="color: #9ca3af; font-size: 14px; margin-bottom: 16px;">Exporte e importe dados entre diferentes motores de banco</p>
+              <div class="migration-actions">
+                <div class="migration-card" onclick="showToast('Exportação iniciada')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  <h4>Exportar Dados</h4>
+                  <p>JSON/SQL</p>
+                </div>
+                <div class="migration-card" onclick="showToast('Importação iniciada')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                  <h4>Importar Dados</h4>
+                  <p>De outro banco</p>
+                </div>
+              </div>
+              <div class="migration-assisted">
+                <h4>Migração Assistida</h4>
+                <p>Transfira dados automaticamente de um motor para outro mantendo integridade referencial.</p>
+                <div class="migration-selectors">
+                  <select id="migration-source">
+                    <option value="sqlite">SQLite</option>
+                    <option value="postgresql" selected>PostgreSQL</option>
+                    <option value="mariadb">MariaDB</option>
+                    <option value="firebird">Firebird</option>
+                  </select>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M8 3L4 7l4 4"/>
+                    <path d="M4 7h16"/>
+                    <path d="M16 21l4-4-4-4"/>
+                    <path d="M20 17H4"/>
+                  </svg>
+                  <select id="migration-target">
+                    <option value="sqlite" selected>SQLite</option>
+                    <option value="postgresql">PostgreSQL</option>
+                    <option value="mariadb">MariaDB</option>
+                    <option value="firebird">Firebird</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary" onclick="startMigration()">Iniciar Migração</button>
+              </div>
+            </div>
+
+            <!-- Templates Tab -->
+            <div id="templates-panel" class="tab-panel">
+              <p style="color: #9ca3af; font-size: 14px; margin-bottom: 16px;">Templates de configuração pré-definidos</p>
+              <div class="templates-grid">
+                <div class="template-card">
+                  <div class="template-info">
+                    <h4>PostgreSQL Padrão</h4>
+                    <p>localhost:5432 / orthoplus</p>
+                  </div>
+                  <button class="template-btn" onclick="applyTemplate('postgresql')">Aplicar</button>
+                </div>
+                <div class="template-card">
+                  <div class="template-info">
+                    <h4>SQLite Local</h4>
+                    <p>/var/lib/orthoplus/database.db</p>
+                  </div>
+                  <button class="template-btn" onclick="applyTemplate('sqlite')">Aplicar</button>
+                </div>
+                <div class="template-card">
+                  <div class="template-info">
+                    <h4>MariaDB Local</h4>
+                    <p>localhost:3306 / orthoplus</p>
+                  </div>
+                  <button class="template-btn" onclick="applyTemplate('mariadb')">Aplicar</button>
+                </div>
+                <div class="template-card">
+                  <div class="template-info">
+                    <h4>Firebird Local</h4>
+                    <p>localhost:3050 / database.fdb</p>
+                  </div>
+                  <button class="template-btn" onclick="applyTemplate('firebird')">Aplicar</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Docs Tab -->
+            <div id="docs-panel" class="tab-panel">
+              <p style="color: #9ca3af; font-size: 14px; margin-bottom: 16px;">Documentação oficial e recursos para <span id="docs-engine-name">PostgreSQL</span></p>
+              <div class="docs-list" id="docs-list">
+                <!-- Docs will be populated by JS -->
+              </div>
+              <div class="install-tips">
+                <h4>💡 Dicas de Instalação</h4>
+                <div id="install-commands">
+                  <!-- Commands will be populated by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Backup Section -->
+      <section id="backup-section" class="section">
+        <div class="main-card">
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="backup-header">
+              <div class="backup-header-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                  <path d="M2 17l10 5 10-5"/>
+                  <path d="M2 12l10 5 10-5"/>
+                </svg>
+              </div>
+              <span class="backup-header-text">Backup Local</span>
+            </div>
+            <p class="backup-subtitle">Criar e restaurar backups do banco de dados</p>
+          </div>
+
+          <!-- Backup Info Box -->
+          <div class="tab-content">
+            <div class="backup-info-box">
+              <div class="backup-info-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+                O que são Backups?
+              </div>
+              <div class="backup-info-list">
+                <div class="backup-info-item">
+                  <span class="backup-info-number">1</span>
+                  <span>Backup é uma <strong>cópia de segurança</strong> dos seus dados - como tirar uma foto do sistema.</span>
+                </div>
+                <div class="backup-info-item">
+                  <span class="backup-info-number">2</span>
+                  <span>Se algo der errado (computador quebrar, vírus, etc.), você pode restaurar tudo usando essa cópia.</span>
+                </div>
+                <div class="backup-info-item">
+                  <span class="backup-info-number">3</span>
+                  <span><strong>BACKUP COMPLETO:</strong> Copia TUDO. Leva mais tempo, mas é a forma mais segura.</span>
+                </div>
+                <div class="backup-info-item">
+                  <span class="backup-info-number">4</span>
+                  <span><strong>BACKUP INCREMENTAL:</strong> Copia apenas o que mudou desde o último backup. É mais rápido!</span>
+                </div>
+              </div>
+              <div class="backup-tips">
+                <div class="backup-tip">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                  </svg>
+                  Faça backup completo toda semana
+                </div>
+                <div class="backup-tip">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                  </svg>
+                  Faça backup incremental todo dia
+                </div>
+                <div class="backup-tip">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                  </svg>
+                  Guarde cópias em lugares diferentes (pen drive, nuvem)
+                </div>
+              </div>
+              <div class="backup-alert">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                Sem backup, se o computador quebrar, você perde TUDO! Não arrisque.
+              </div>
+            </div>
+
+            <!-- Backup Tabs -->
+            <div class="backup-tabs">
+              <button class="backup-tab active">Local</button>
+              <button class="backup-tab">Nuvem</button>
+              <button class="backup-tab">Distribuído</button>
+            </div>
+
+            <!-- Backup Actions -->
+            <div class="backup-actions">
+              <button class="backup-action-btn" onclick="showToast('Backup completo iniciado')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Backup Completo
+              </button>
+              <button class="backup-action-btn" onclick="showToast('Backup incremental iniciado')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Incremental
+              </button>
+            </div>
+
+            <!-- Empty State -->
+            <div class="backup-empty">
+              Nenhum backup encontrado
+            </div>
+
+            <!-- Schedule Toggle -->
+            <div class="backup-schedule">
+              <div class="backup-schedule-text">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                Agendamento Automático
+              </div>
+              <div class="toggle-switch" onclick="this.classList.toggle('active'); showToast('Agendamento ' + (this.classList.contains('active') ? 'ativado' : 'desativado'))"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h3 class="modal-title" id="modal-title">Título</h3>
+      <p class="modal-text" id="modal-text">Conteúdo</p>
+      <button class="modal-close" onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+      <polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+    <span id="toast-message">Mensagem</span>
+  </div>
+
+  <script>
+    // Engine Data
+    const engineData = {
+      sqlite: {
+        name: 'SQLite',
+        icon: '🗃️',
+        port: null,
+        description: 'Banco de dados leve em arquivo único, ideal para instalações single-node',
+        whenToUse: [
+          'Instalações single-node (1 terminal)',
+          'Ambientes offline sem rede',
+          'Backup fácil (apenas copiar arquivo)',
+          'Desenvolvimento e testes'
+        ],
+        limitations: [
+          'Limite de conexões simultâneas',
+          'Não recomendado para múltiplos clientes',
+          'Sem replicação nativa'
+        ],
+        features: ['Zero configuração', 'Arquivo único portátil', 'Sem servidor externo', 'Transações ACID', 'Full-text search'],
+        install: 'SQLite já vem embutido - não requer instalação adicional.',
+        docs: [
+          { name: 'SQLite Documentation', url: 'https://sqlite.org/docs.html' },
+          { name: 'SQLite FAQ', url: 'https://sqlite.org/faq.html' },
+          { name: 'SQLite Query Language', url: 'https://sqlite.org/lang.html' }
+        ],
+        tools: [
+          { name: 'VACUUM', desc: 'Compacta o banco e recupera espaço', sql: 'VACUUM;' },
+          { name: 'Integrity Check', desc: 'Verifica integridade dos dados', sql: 'PRAGMA integrity_check;' },
+          { name: 'Reindex', desc: 'Reconstrói todos os índices', sql: 'REINDEX;' },
+          { name: 'Analyze', desc: 'Atualiza estatísticas das tabelas', sql: 'ANALYZE;' }
+        ]
+      },
+      postgresql: {
+        name: 'PostgreSQL',
+        icon: '🐘',
+        port: 5432,
+        description: 'Banco de dados robusto e escalável para ambientes corporativos',
+        whenToUse: [
+          'Múltiplos terminais JUKEBOX (rede)',
+          'Ambientes corporativos',
+          'Alta disponibilidade (replicação)',
+          'Integração com outras aplicações'
+        ],
+        limitations: [
+          'Requer instalação separada',
+          'Mais complexo de administrar',
+          'Consumo maior de recursos'
+        ],
+        features: ['JSON/JSONB nativo', 'Full-text search avançado', 'Replicação síncrona/assíncrona', 'Extensões (PostGIS, etc)', 'MVCC robusto'],
+        install: `Arch/CachyOS: sudo pacman -S postgresql\nUbuntu/Debian: sudo apt install postgresql`,
+        docs: [
+          { name: 'PostgreSQL Docs', url: 'https://www.postgresql.org/docs/' },
+          { name: 'Tutorial Iniciante', url: 'https://www.postgresql.org/docs/current/tutorial.html' },
+          { name: 'PostgreSQL Wiki', url: 'https://wiki.postgresql.org/' }
+        ],
+        tools: [
+          { name: 'VACUUM FULL', desc: 'Compacta e recupera espaço', sql: 'VACUUM FULL;' },
+          { name: 'ANALYZE', desc: 'Atualiza estatísticas', sql: 'ANALYZE;' },
+          { name: 'REINDEX DATABASE', desc: 'Reconstrói índices', sql: 'REINDEX DATABASE jukebox;' },
+          { name: 'pg_checksums', desc: 'Verifica checksums das páginas', sql: 'pg_checksums --check' }
+        ]
+      },
+      mariadb: {
+        name: 'MariaDB',
+        icon: '🐬',
+        port: 3306,
+        description: 'Fork do MySQL com melhor performance e compatibilidade',
+        whenToUse: [
+          'Ambientes com múltiplos jukeboxes',
+          'Migração de sistemas MySQL existentes',
+          'Compatibilidade com scripts MySQL',
+          'Alto volume de leituras'
+        ],
+        limitations: [
+          'Algumas funções PostgreSQL não disponíveis',
+          'Menor comunidade que PostgreSQL',
+          'JSON menos robusto'
+        ],
+        features: ['Compatível com MySQL', 'Storage engines diversos', 'Galera Cluster nativo', 'Thread pool', 'Aria engine'],
+        install: `Arch/CachyOS: sudo pacman -S mariadb\nUbuntu/Debian: sudo apt install mariadb-server`,
+        docs: [
+          { name: 'MariaDB Documentation', url: 'https://mariadb.com/kb/en/documentation/' },
+          { name: 'MariaDB Tutorial', url: 'https://mariadb.com/kb/en/getting-started/' },
+          { name: 'MariaDB Knowledge Base', url: 'https://mariadb.com/kb/en/' }
+        ],
+        tools: [
+          { name: 'OPTIMIZE TABLE', desc: 'Otimiza tabelas', sql: 'OPTIMIZE TABLE {table};' },
+          { name: 'ANALYZE TABLE', desc: 'Atualiza estatísticas', sql: 'ANALYZE TABLE {table};' },
+          { name: 'CHECK TABLE', desc: 'Verifica integridade', sql: 'CHECK TABLE {table};' },
+          { name: 'REPAIR TABLE', desc: 'Repara tabelas corrompidas', sql: 'REPAIR TABLE {table};' }
+        ]
+      },
+      firebird: {
+        name: 'Firebird',
+        icon: '🔥',
+        port: 3050,
+        description: 'Banco de dados legado multiplataforma com modo embedded',
+        whenToUse: [
+          'Sistemas legados existentes',
+          'Migração gradual de Firebird',
+          'Compatibilidade com aplicações antigas',
+          'Ambientes Windows/Linux mistos'
+        ],
+        limitations: [
+          'Comunidade menor',
+          'Menos recursos modernos',
+          'Documentação limitada'
+        ],
+        features: ['Embedded mode', 'Multiplataforma', 'Transações ACID', 'Triggers e stored procedures', 'Compacto'],
+        install: `Arch/CachyOS: sudo pacman -S firebird\nUbuntu/Debian: sudo apt install firebird3.0-server`,
+        docs: [
+          { name: 'Firebird Docs', url: 'https://firebirdsql.org/en/documentation/' },
+          { name: 'Firebird FAQ', url: 'https://firebirdsql.org/en/faq/' },
+          { name: 'Firebird SQL Reference', url: 'https://firebirdsql.org/file/documentation/reference_manuals/fblangref25-en.pdf' }
+        ],
+        tools: [
+          { name: 'gfix -v', desc: 'Verifica integridade', sql: 'gfix -v -full {database}' },
+          { name: 'gfix -sweep', desc: 'Limpa versões antigas', sql: 'gfix -sweep {database}' },
+          { name: 'gbak', desc: 'Backup/Restore', sql: 'gbak -b database.fdb backup.fbk' },
+          { name: 'gstat', desc: 'Estatísticas', sql: 'gstat -h {database}' }
+        ]
+      }
+    };
+
+    let currentEngine = 'postgresql';
+
+    // Show Section
+    function showSection(section) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      
+      document.getElementById(section + '-section').classList.add('active');
+      event.target.closest('.nav-tab').classList.add('active');
+    }
+
+    // Switch Tab
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      
+      document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+      document.getElementById(tab + '-panel').classList.add('active');
+    }
+
+    // Select Engine
+    function selectEngine(engine) {
+      currentEngine = engine;
+      
+      document.querySelectorAll('.engine-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      document.querySelector(`[data-engine="${engine}"]`).classList.add('selected');
+      
+      updateEngineDetails(engineData[engine]);
+      updateDocs(engine);
+      updateTools(engine);
+      
+      // Update config visibility
+      const pgConfig = document.getElementById('pg-config');
+      const sqliteConfig = document.getElementById('sqlite-config');
+      
+      if (engine === 'sqlite') {
+        pgConfig.style.display = 'none';
+        sqliteConfig.style.display = 'block';
+      } else {
+        pgConfig.style.display = 'block';
+        sqliteConfig.style.display = 'none';
+        const engineName = engineData[engine].name;
+        pgConfig.querySelector('.btn-primary').innerHTML = `
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          Testar Conexão ${engineName}
+        `;
+      }
+    }
+
+    // Update Engine Details
+    function updateEngineDetails(data) {
+      const details = document.getElementById('engine-details');
+      details.innerHTML = `
+        <div class="details-header">
+          <span style="font-size: 24px;">${data.icon}</span>
+          ${data.name} - Detalhes
+        </div>
+        <div class="details-grid">
+          <div class="details-section when-use">
+            <h4>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Quando usar:
+            </h4>
+            <ul>
+              ${data.whenToUse.map(item => `<li>${item}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="details-section limitations">
+            <h4>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              Limitações:
+            </h4>
+            <ul>
+              ${data.limitations.map(item => `<li>${item}</li>`).join('')}
+            </ul>
+          </div>
+        </div>
+        <div class="features-tags">
+          ${data.features.map(f => `<span class="feature-tag">${f}</span>`).join('')}
+        </div>
+      `;
+    }
+
+    // Update Docs
+    function updateDocs(engine) {
+      const data = engineData[engine];
+      document.getElementById('docs-engine-name').textContent = data.name;
+      document.getElementById('docs-list').innerHTML = data.docs.map(doc => `
+        <a href="${doc.url}" target="_blank" class="doc-link">
+          <div class="doc-link-content">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            ${doc.name}
+          </div>
+          <svg class="doc-link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+        </a>
+      `).join('');
+      
+      document.getElementById('install-commands').innerHTML = data.install.split('\n').map(cmd => `
+        <code>${cmd}</code>
+      `).join('');
+    }
+
+    // Update Tools
+    function updateTools(engine) {
+      const data = engineData[engine];
+      document.getElementById('repair-engine-name').textContent = data.name;
+      document.getElementById('tools-grid').innerHTML = data.tools.map(tool => `
+        <div class="tool-card">
+          <div class="tool-header">
+            <span class="tool-name">${tool.name}</span>
+            <button class="tool-run-btn" onclick="runTool('${tool.name}')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+            </button>
+          </div>
+          <p class="tool-description">${tool.desc}</p>
+          <code class="tool-sql">${tool.sql}</code>
+        </div>
+      `).join('');
+    }
+
+    // Toggle password
+    function togglePassword(btn) {
+      const input = btn.previousElementSibling;
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    // Testar conexão
+    function testConnection() {
+      showModal('Teste de Conexão', `Conexão com ${engineData[currentEngine].name} testada com sucesso!\n\nStatus: ✅ Conectado\nVersão: 14.5\nTempo de resposta: 15ms`);
+    }
+
+    // Executar ferramenta
+    function runTool(toolName) {
+      showModal('Ferramenta Executada', `${toolName} executado com sucesso!\n\nComando SQL aplicado ao banco de dados.`);
+    }
+
+    // Iniciar migração
+    function startMigration() {
+      const source = document.getElementById('migration-source').value;
+      const target = document.getElementById('migration-target').value;
+      
+      if (source === target) {
+        showModal('Erro', 'O motor de origem e destino devem ser diferentes!');
+        return;
+      }
+      
+      showModal('Migração Iniciada', `Migrando de ${engineData[source].name} para ${engineData[target].name}...\n\n✅ 12 tabelas migradas\n✅ 5.240 registros transferidos\n✅ Integridade referencial mantida`);
+    }
+
+    // Aplicar template
+    function applyTemplate(engine) {
+      selectEngine(engine);
+      showModal('Template Aplicado', `Configuração de ${engineData[engine].name} aplicada com sucesso!`);
+    }
+
+    // Modal
+    function showModal(title, text) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-text').textContent = text;
+      document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    // Toast
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Fechar modal ao clicar fora
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target.id === 'modal') closeModal();
+    });
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      updateEngineDetails(engineData.postgresql);
+      updateDocs('postgresql');
+      updateTools('postgresql');
+    });
+  </script>
+</body>
+</html>

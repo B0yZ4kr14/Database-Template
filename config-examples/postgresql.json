@@ -1,0 +1,17 @@
+{
+  "name": "PostgreSQL - Configuração Padrão",
+  "description": "Configuração recomendada para PostgreSQL em Ubuntu Server LTS",
+  "engine": "postgresql",
+  "host": "localhost",
+  "port": 5432,
+  "database": "orthoplus",
+  "username": "postgres",
+  "password": "",
+  "ssl_mode": "prefer",
+  "install_command": "sudo apt install postgresql postgresql-contrib",
+  "notes": [
+    "Requer instalação do PostgreSQL",
+    "Padrão de porta: 5432",
+    "SSL mode 'prefer' tenta conexão segura primeiro"
+  ]
+}
