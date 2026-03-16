@@ -4,6 +4,12 @@ API Tests
 Testes para endpoints da API
 """
 
+import os
+import sys
+
+# Garante que o diretório backend esteja no PYTHONPATH
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
 import pytest
 from fastapi.testclient import TestClient
 from main import app
