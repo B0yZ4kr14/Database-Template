@@ -12,6 +12,10 @@ pydantic-settings==2.13.1
 # CORS
 python-multipart==0.0.22
 
+# Authentication
+python-jose[cryptography]==3.5.0
+passlib[bcrypt]==1.7.4
+
 # Database Drivers (opcionais)
 # psycopg2-binary==2.9.9  # PostgreSQL
 # pymysql==1.1.0          # MariaDB/MySQL
